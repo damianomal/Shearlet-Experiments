@@ -58,7 +58,7 @@ selected = sortrows(selected, [3 1 2]);
 % if specified, save selected points to file
 if(nargin > 1)
     [~,name,~] = fileparts(filename);
-    txtname = [name '_selected'];
+    txtname = [name '_selected.mat'];
     save(txtname, 'selected');
 end
 
