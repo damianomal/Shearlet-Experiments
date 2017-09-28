@@ -4,6 +4,7 @@
 video_filenames = {'person04_boxing_d1_uncomp.avi',1,100};
 descriptors = [];
 
+
 %% ORIGINALI
 
 % global figure handles
@@ -56,10 +57,11 @@ for fname = video_filenames'
             % .........salva la visualizzazione 3D del descrittore
             shearlet_show_descriptor(repr);
             
-%             imagesel = getfield(getframe(), 'cdata');
             outname = [prefix name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
+%             imagesel = getfield(getframe(), 'cdata');
 %             imwrite(imagesel, outname, 'png');
             saveas(gcf, outname);
+            RemoveWhiteSpace([], 'file', outname);
             
         end
         
@@ -74,9 +76,9 @@ for fname = video_filenames'
         plot(points(:,1), points(:,2), 'ro', 'MarkerSize', 5, 'LineWidth', 2);
         hold off;
         outname = [prefix name '_frame_' int2str(t) '_points.png'];
-%         imagesel = getfield(getframe(), 'cdata');
-%         imwrite(imagesel, outname, 'png');
-        saveas(gcf, outname);
+        imagesel = getfield(getframe(), 'cdata');
+        imwrite(imagesel, outname, 'png');
+%         saveas(gcf, outname);
         
         close(fH);
     end
@@ -142,10 +144,11 @@ for fname = video_filenames'
             % .........salva la visualizzazione 3D del descrittore
             shearlet_show_descriptor(repr);
             
-%             imagesel = getfield(getframe(), 'cdata');
             outname = [prefix name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
+%             imagesel = getfield(getframe(), 'cdata');
 %             imwrite(imagesel, outname, 'png');
             saveas(gcf, outname);
+            RemoveWhiteSpace([], 'file', outname);
             
         end
         
@@ -160,9 +163,9 @@ for fname = video_filenames'
         plot(size(VID,2)-points(:,2)+1, points(:,1), 'ro', 'MarkerSize', 5, 'LineWidth', 2);
         hold off;
         outname = [prefix name '_frame_' int2str(t) '_points.png'];
-%         imagesel = getfield(getframe(), 'cdata');
-%         imwrite(imagesel, outname, 'png');
-        saveas(gcf, outname);
+        imagesel = getfield(getframe(), 'cdata');
+        imwrite(imagesel, outname, 'png');
+%         saveas(gcf, outname);
         
         close(fH);
     end
@@ -232,10 +235,11 @@ for fname = video_filenames'
             % .........salva la visualizzazione 3D del descrittore
             shearlet_show_descriptor(repr);
             
-%             imagesel = getfield(getframe(), 'cdata');
             outname = [prefix name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
+%             imagesel = getfield(getframe(), 'cdata');
 %             imwrite(imagesel, outname, 'png');
             saveas(gcf, outname);
+            RemoveWhiteSpace([], 'file', outname);
             
         end
         
@@ -250,9 +254,9 @@ for fname = video_filenames'
         plot(points(:,1), points(:,2), 'ro', 'MarkerSize', 5, 'LineWidth', 2);
         hold off;
         outname = [prefix name '_frame_' int2str(t) '_points.png'];
-%         imagesel = getfield(getframe(), 'cdata');
-%         imwrite(imagesel, outname, 'png');
-        saveas(gcf, outname);
+        imagesel = getfield(getframe(), 'cdata');
+        imwrite(imagesel, outname, 'png');
+%         saveas(gcf, outname);
         
         close(fH);
     end
@@ -309,8 +313,8 @@ for fname = video_filenames'
         points = selected(selected(:,3) == t,:);
         for i = 1:size(points,1)
             
-            x = points(i,1);
-            y = points(i,2) + SHIFT_AMOUNT;
+            x = points(i,1) + SHIFT_AMOUNT;
+            y = points(i,2);
             
             % .........calcola il descrittore per il punto            
             index = (y-1)*size(VID,2)+x;
@@ -322,10 +326,11 @@ for fname = video_filenames'
             % .........salva la visualizzazione 3D del descrittore
             shearlet_show_descriptor(repr);
             
-%             imagesel = getfield(getframe(), 'cdata');
             outname = [prefix name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
+%             imagesel = getfield(getframe(), 'cdata');
 %             imwrite(imagesel, outname, 'png');
             saveas(gcf, outname);
+            RemoveWhiteSpace([], 'file', outname);
             
         end
         
@@ -340,9 +345,9 @@ for fname = video_filenames'
         plot(points(:,1)+SHIFT_AMOUNT, points(:,2), 'ro', 'MarkerSize', 5, 'LineWidth', 2);
         hold off;
         outname = [prefix name '_frame_' int2str(t) '_points.png'];
-%         imagesel = getfield(getframe(), 'cdata');
-%         imwrite(imagesel, outname, 'png');
-        saveas(gcf, outname);
+        imagesel = getfield(getframe(), 'cdata');
+        imwrite(imagesel, outname, 'png');
+%         saveas(gcf, outname);
         
 %         close(fH);
     end
@@ -353,7 +358,7 @@ for fname = video_filenames'
 
 end
 
-
+%% FINISHED
 
 
 
