@@ -48,7 +48,7 @@ c = 37;
 x = 69;
 y = 17;
 
-while true
+while false
     
     imshow(VID(:,:,c), []);
     
@@ -189,7 +189,7 @@ close all;
 clear -global fH1 fH2
 
 y2 = x;
-x2 = size(VID,2) - y +1;
+x2 = size(VID,2)-y+1;
 
 index2 = (floor(y2)-1)*size(VID,2)+floor(x2);
 selected2 = REPRESENTATION2(index2,:);
