@@ -6,6 +6,8 @@ function selected = exp_select_points_sequence(video, filename)
 selected = [];
 c = 1;
 
+prefix = 'points/';
+
 % keeps running
 while true
     
@@ -36,7 +38,7 @@ while true
             selected = [selected; floor([x y c])];
             
         case 's'
-            c = floor(input('Target frame'));
+            c = floor(input('Target frame: '));
             if(c<1)
                 c=1;
             else if(c>size(video,3))
@@ -58,7 +60,7 @@ selected = sortrows(selected, [3 1 2]);
 % if specified, save selected points to file
 if(nargin > 1)
     [~,name,~] = fileparts(filename);
-    txtname = [name '_selected.mat'];
+    txtname = [prefix name '_selected.mat'];
     save(txtname, 'selected');
 end
 

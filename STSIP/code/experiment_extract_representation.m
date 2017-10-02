@@ -1,9 +1,24 @@
 
-
 % lista di video da caricare
-video_filenames = {'person04_boxing_d1_uncomp.avi',1,100};
+% video_filenames = {'person04_boxing_d1_uncomp.avi',1,100;
+%                    'Sample0001_color.mp4', 1239, 1350;
+%                    'mixing_cam2.avi', 1, 100};
+video_filenames = {'mixing_cam2.avi', 1, 100};
 descriptors = [];
 
+%% video da caricare per selezionare punti
+
+close all;
+
+id = 1;
+filename = video_filenames{id,1};
+start_vid = video_filenames{id,2};
+end_vid  = video_filenames{id,3};
+
+VID = load_video_to_mat(filename, 160, start_vid, end_vid, true);
+exp_select_points_sequence(VID, filename);
+
+clear start_vid end_vid filename
 
 %% ORIGINALI
 
@@ -27,6 +42,9 @@ for fname = video_filenames'
     [~,name,~] = fileparts(fname{1});
     txtname = ['points/' name '_selected.mat'];
     load(txtname);
+    
+    % ...crea la directory se non esiste
+    mkdir(prefix, name);
     
     % ...per ogni fotogramma diverso indicato dalla terza colonna in SEL...
     third_col = unique(selected(:,3));
@@ -57,7 +75,7 @@ for fname = video_filenames'
             % .........salva la visualizzazione 3D del descrittore
             shearlet_show_descriptor(repr);
             
-            outname = [prefix name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
+            outname = [prefix name '/' name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
 %             imagesel = getfield(getframe(), 'cdata');
 %             imwrite(imagesel, outname, 'png');
             saveas(gcf, outname);
@@ -66,7 +84,7 @@ for fname = video_filenames'
         end
         
         % ......salva il fotogramma attuale
-        outname = [prefix name '_frame_' int2str(t) '.png'];
+        outname = [prefix name '/' name '_frame_' int2str(t) '.png'];
         imwrite(VID(:,:,t) ./ 255, outname, 'png');
         
         % ......salva il fotogramma attuale con sovrapposti i punti rossi
@@ -75,7 +93,7 @@ for fname = video_filenames'
         hold on;
         plot(points(:,1), points(:,2), 'ro', 'MarkerSize', 5, 'LineWidth', 2);
         hold off;
-        outname = [prefix name '_frame_' int2str(t) '_points.png'];
+        outname = [prefix name '/' name '_frame_' int2str(t) '_points.png'];
         imagesel = getfield(getframe(), 'cdata');
         imwrite(imagesel, outname, 'png');
 %         saveas(gcf, outname);
@@ -84,7 +102,7 @@ for fname = video_filenames'
     end
     
     % ...salva i descrittori su di un file .mat
-    txtname = [prefix name '_descriptors.mat'];
+    txtname = [prefix name '/' name '_descriptors.mat'];
     save(txtname, 'descriptors');
 
 end
@@ -99,6 +117,7 @@ clear -global fH1 fH2
 descriptors = [];
 
 prefix = 'results/transformation_1/';
+% prefix = 'results/transformation_4/';
 
 % per ogni video da caricare...
 for fname = video_filenames'
@@ -115,9 +134,12 @@ for fname = video_filenames'
     txtname = ['points/' name '_selected.mat'];
     load(txtname);
     
+    % ...crea la directory se non esiste
+    mkdir(prefix, name);
+    
     % ...per ogni fotogramma diverso indicato dalla terza colonna in SEL...
     third_col = unique(selected(:,3));
-    for j = 1:numel(third_col)
+    for j = 1:1
         
         t = third_col(j);
         
@@ -134,6 +156,9 @@ for fname = video_filenames'
             x = size(VID,2)-points(i,2)+1;
             y = points(i,1);
             
+%             x = size(VID,2)-points(i,1)+1;
+%             y = size(VID,1)-points(i,2)+1;
+            
             % .........calcola il descrittore per il punto            
             index = (y-1)*size(VID,2)+x;
             repr = REPRESENTATION(index,:);
@@ -144,7 +169,7 @@ for fname = video_filenames'
             % .........salva la visualizzazione 3D del descrittore
             shearlet_show_descriptor(repr);
             
-            outname = [prefix name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
+            outname = [prefix name '/' name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
 %             imagesel = getfield(getframe(), 'cdata');
 %             imwrite(imagesel, outname, 'png');
             saveas(gcf, outname);
@@ -153,16 +178,18 @@ for fname = video_filenames'
         end
         
         % ......salva il fotogramma attuale
-        outname = [prefix name '_frame_' int2str(t) '.png'];
+        outname = [prefix name '/' name '_frame_' int2str(t) '.png'];
         imwrite(VID(:,:,t) ./ 255, outname, 'png');
         
         % ......salva il fotogramma attuale con sovrapposti i punti rossi
         fH = figure;
         imshow(VID(:,:,t), []);
         hold on;
-        plot(size(VID,2)-points(:,2)+1, points(:,1), 'ro', 'MarkerSize', 5, 'LineWidth', 2);
+        plot(size(VID,2)-points(:,2)+1, points(:,1),'ro', 'MarkerSize', 5, 'LineWidth', 2);
+%         plot(size(VID,2)-points(:,1)+1, size(VID,1)-points(:,2)+1, 'ro', 'MarkerSize', 5, 'LineWidth', 2);
         hold off;
-        outname = [prefix name '_frame_' int2str(t) '_points.png'];
+        
+        outname = [prefix name '/' name '_frame_' int2str(t) '_points.png'];
         imagesel = getfield(getframe(), 'cdata');
         imwrite(imagesel, outname, 'png');
 %         saveas(gcf, outname);
@@ -171,7 +198,7 @@ for fname = video_filenames'
     end
     
     % ...salva i descrittori su di un file .mat
-    txtname = [prefix name '_descriptors.mat'];
+    txtname = [prefix name '/' name '_descriptors.mat'];
     save(txtname, 'descriptors');
     
 end
@@ -206,6 +233,9 @@ for fname = video_filenames'
     txtname = ['points/' name '_selected.mat'];
     load(txtname);
     
+    % ...crea la directory se non esiste
+    mkdir(prefix, name);
+    
     % ...per ogni fotogramma diverso indicato dalla terza colonna in SEL...
     third_col = unique(selected(:,3));
     for j = 1:numel(third_col)
@@ -235,7 +265,7 @@ for fname = video_filenames'
             % .........salva la visualizzazione 3D del descrittore
             shearlet_show_descriptor(repr);
             
-            outname = [prefix name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
+            outname = [prefix name '/' name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
 %             imagesel = getfield(getframe(), 'cdata');
 %             imwrite(imagesel, outname, 'png');
             saveas(gcf, outname);
@@ -244,7 +274,7 @@ for fname = video_filenames'
         end
         
         % ......salva il fotogramma attuale
-        outname = [prefix name '_frame_' int2str(t) '.png'];
+        outname = [prefix name '/' name '_frame_' int2str(t) '.png'];
         imwrite(VID(:,:,t) ./ 255, outname, 'png');
         
         % ......salva il fotogramma attuale con sovrapposti i punti rossi
@@ -253,7 +283,7 @@ for fname = video_filenames'
         hold on;
         plot(points(:,1), points(:,2), 'ro', 'MarkerSize', 5, 'LineWidth', 2);
         hold off;
-        outname = [prefix name '_frame_' int2str(t) '_points.png'];
+        outname = [prefix name '/' name '_frame_' int2str(t) '_points.png'];
         imagesel = getfield(getframe(), 'cdata');
         imwrite(imagesel, outname, 'png');
 %         saveas(gcf, outname);
@@ -262,7 +292,7 @@ for fname = video_filenames'
     end
     
     % ...salva i descrittori su di un file .mat
-    txtname = [prefix name '_descriptors.mat'];
+    txtname = [prefix name '/' name '_descriptors.mat'];
     save(txtname, 'descriptors');
 
 end
@@ -297,6 +327,9 @@ for fname = video_filenames'
     txtname = ['points/' name '_selected.mat'];
     load(txtname);
     
+    % ...crea la directory se non esiste
+    mkdir(prefix, name);
+    
     % ...per ogni fotogramma diverso indicato dalla terza colonna in SEL...
     third_col = unique(selected(:,3));
     for j = 1:numel(third_col)
@@ -326,7 +359,7 @@ for fname = video_filenames'
             % .........salva la visualizzazione 3D del descrittore
             shearlet_show_descriptor(repr);
             
-            outname = [prefix name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
+            outname = [prefix name '/' name '_frame_' int2str(t) '_point_' int2str(i) '.png'];
 %             imagesel = getfield(getframe(), 'cdata');
 %             imwrite(imagesel, outname, 'png');
             saveas(gcf, outname);
@@ -335,7 +368,7 @@ for fname = video_filenames'
         end
         
         % ......salva il fotogramma attuale
-        outname = [prefix name '_frame_' int2str(t) '.png'];
+        outname = [prefix name '/' name '_frame_' int2str(t) '.png'];
         imwrite(VID(:,:,t) ./ 255, outname, 'png');
         
         % ......salva il fotogramma attuale con sovrapposti i punti rossi
@@ -344,7 +377,7 @@ for fname = video_filenames'
         hold on;
         plot(points(:,1)+SHIFT_AMOUNT, points(:,2), 'ro', 'MarkerSize', 5, 'LineWidth', 2);
         hold off;
-        outname = [prefix name '_frame_' int2str(t) '_points.png'];
+        outname = [prefix name '/' name '_frame_' int2str(t) '_points.png'];
         imagesel = getfield(getframe(), 'cdata');
         imwrite(imagesel, outname, 'png');
 %         saveas(gcf, outname);
@@ -353,7 +386,7 @@ for fname = video_filenames'
     end
     
     % ...salva i descrittori su di un file .mat
-    txtname = [prefix name '_descriptors.mat'];
+    txtname = [prefix name '/' name '_descriptors.mat'];
     save(txtname, 'descriptors');
 
 end

@@ -97,6 +97,9 @@ end
 frame_h = vidObj.Height;
 frame_w = vidObj.Width;
 
+% frame_h = vidObj.Width;
+% frame_w = vidObj.Height;
+
 % if specified, calculates the future size of the frames, after the
 % resizing process
 if(max_size > 0 && max_size < max(frame_h, frame_w))
@@ -115,11 +118,15 @@ end
 result = zeros(frame_w, frame_h,end_frame-start_frame+1);
 color_result = zeros(frame_w, frame_h,3,end_frame-start_frame+1);
 
+% result = zeros(frame_h, frame_w,end_frame-start_frame+1);
+% color_result = zeros(frame_h, frame_w,3,end_frame-start_frame+1);
+
 % loads the video sequence
 while(hasFrame(vidObj) && count <= end_frame)
     
     % reads the current frame
     color_frame = imrotate(readFrame(vidObj), -90);
+%     color_frame = imrotate(readFrame(vidObj), -180);
     
     % if the user specified to consider the frame
     if(count >= start_frame)
