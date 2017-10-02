@@ -18,6 +18,8 @@ local.properties
 points/
 results/
 shearlet_preloaded_sequences/
+*.asv
+*.png
 
 # External tool builders
 .externalToolBuilders/
