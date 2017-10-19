@@ -1,4 +1,4 @@
-function [result, color_result] = load_video_to_mat_rotated( input_video, max_size, start_frame, end_frame, store)
+function [result, color_result] = load_video_to_mat_rotated( input_video, max_size, start_frame, end_frame, store, amount)
 %LOAD_VIDEO_TO_MAT Loads a video sequence both in grayscale and color
 %
 % Usage:
@@ -53,6 +53,12 @@ if(nargin < 5)
     store = false;
 end
 
+%
+%
+if(nargin < 6)
+    amount = -90;
+end
+
 % parameters controls
 % if(max_size < 16)
 %         ME = MException('load_video_to_mat:tiny_max_size_for_frames', ...
@@ -94,17 +100,19 @@ if(store && exist(['shearlet_preloaded_sequences/' filename], 'file') == 2)
 end
 
 % extracts the height and width of each video frame
-frame_h = vidObj.Height;
-frame_w = vidObj.Width;
 
-% frame_h = vidObj.Width;
-% frame_w = vidObj.Height;
+if(amount == -90)
+    frame_h = vidObj.Width;
+    frame_w = vidObj.Height;
+else
+    frame_h = vidObj.Height;
+    frame_w = vidObj.Width;
+end
 
 % if specified, calculates the future size of the frames, after the
 % resizing process
 if(max_size > 0 && max_size < max(frame_h, frame_w))
     ratio = max_size / max(frame_h, frame_w);
-    
     
     frame_h = round(frame_h * ratio);
     frame_w = round(frame_w * ratio);
@@ -114,19 +122,28 @@ else
     resize_frame = false;
 end
 
-% initializes the resulting objects
-result = zeros(frame_w, frame_h,end_frame-start_frame+1);
-color_result = zeros(frame_w, frame_h,3,end_frame-start_frame+1);
-
-% result = zeros(frame_h, frame_w,end_frame-start_frame+1);
-% color_result = zeros(frame_h, frame_w,3,end_frame-start_frame+1);
+% % initializes the resulting objects
+% if(amount == -90)
+%     result = zeros(frame_w, frame_h,end_frame-start_frame+1);
+%     color_result = zeros(frame_w, frame_h,3,end_frame-start_frame+1);
+% else
+    result = zeros(frame_h, frame_w,end_frame-start_frame+1);
+    color_result = zeros(frame_h, frame_w,3,end_frame-start_frame+1);
+% end
 
 % loads the video sequence
 while(hasFrame(vidObj) && count <= end_frame)
     
     % reads the current frame
-    color_frame = imrotate(readFrame(vidObj), -90);
-%     color_frame = imrotate(readFrame(vidObj), -180);
+    if(amount == -90)
+        color_frame = imrotate(readFrame(vidObj), -90);
+    else
+        if(amount == -180)
+            color_frame = imrotate(readFrame(vidObj), -180);
+        end
+    end
+    
+%     size(color_frame)
     
     % if the user specified to consider the frame
     if(count >= start_frame)
@@ -145,6 +162,8 @@ while(hasFrame(vidObj) && count <= end_frame)
             result(:,:,i) = new_frame;
             color_result(:,:,:,i) = imresize(color_frame(:,:,:), ratio);
         else
+%             size(result)
+%             size(frame)
             result(:,:,i) = frame;
             color_result(:,:,:,i) = color_frame(:,:,:);
         end

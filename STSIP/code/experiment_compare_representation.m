@@ -1,18 +1,19 @@
 
-clear all;
 close all;
 
 % lista di video da caricare
 video_filenames = {'person04_boxing_d1_uncomp.avi',1,100;
     'Sample0001_color.mp4', 1239, 1350;
-    'mixing_cam2.avi', 1, 100};
+    'mixing_cam2.avi', 1, 100; 
+    'trial_018.avi', 1, 100};
+
 % video_filenames = {'mixing_cam2.avi', 1, 100};
 descriptors = [];
 
 %% video da caricare per selezionare punti
 
 
-id = 3;
+id = 2;
 filename = video_filenames{id,1};
 start_vid = video_filenames{id,2};
 end_vid  = video_filenames{id,3};
@@ -30,13 +31,13 @@ clear COEFFS idxs
 % calculate the representation for a specific frame (frame number 37 of the
 % sequence represented in the VID structure)
 
-TARGET_FRAME = 37; % 72 per truck.mp4, 46 per gesture, 37 per boxing, 37 per mixing
+TARGET_FRAME = 46; % 72 per truck.mp4, 46 per gesture, 37 per boxing, 37 per mixing
 SCALE_USED = 2;
 SKIP_BORDER = 5;
 
 REPRESENTATION = shearlet_descriptor_fast(COEFFS, TARGET_FRAME, SCALE_USED, idxs, true, true, SKIP_BORDER);
 
-CLUSTER_NUMBER = 4;
+CLUSTER_NUMBER = 5;
 [CL_IND, CTRS] = shearlet_cluster_coefficients(REPRESENTATION, CLUSTER_NUMBER, [size(COEFFS,1) size(COEFFS,2)]);
 
 % sorts the clusters with respect to their size, and also rea
@@ -57,10 +58,9 @@ subplot(1,2,2); imshow(img);
 
 %% ROTATION CASE
 
-VID_R = load_video_to_mat_rotated(filename, 160, start_vid, end_vid, false);
-% exp_select_points_sequence(VID, filename);
+AMOUNT = -90;
 
-% VID_R = circshift(VID, [0 20 0]);
+VID_R = load_video_to_mat_rotated(filename, 160, start_vid, end_vid, false, AMOUNT);
 
 clear COEFFS_R idxs_r
 [COEFFS_R,idxs_r] = shearlet_transform_3D(VID_R,46,91,[0 1 1], 3, 1, [2 3]);
@@ -70,7 +70,7 @@ clear COEFFS_R idxs_r
 
 close all;
 
-c = 37;
+c = 46;
 
 
 figure;
@@ -96,7 +96,7 @@ show_rgb(1:end, end-4:end, :) = 0;
 [REPRESENTATION_R, ~, ~, ~] = shearlet_combined_fast(COEFFS_R, c, [2 2], idxs, 0.05, false, true, SKIP_BORDER);
 CL_IND_R = shearlet_cluster_by_seeds(REPRESENTATION_R, COEFFS_R, SORT_CTRS);
 [CL_IMG_R, ~, ~] = shearlet_cluster_image(CL_IND_R, size(SORT_CTRS,1), false, false);
-CL_IMG_R = imrotate(CL_IMG_R, 90);
+CL_IMG_R = imrotate(CL_IMG_R, -AMOUNT);
 show_rgb_r = ind2rgb(CL_IMG_R, cluster_map);
 
 % -------------------
@@ -117,13 +117,13 @@ while true
     
     subplot(1,4,3);
     imshow(show_rgb_r, []);
-    
-%     mask = (CL_IMG ~= CL_IMG_R);
-    mask = (CL_IMG ~= CL_IMG_R) & ...
-        (CL_IMG ~= circshift(CL_IMG_R, [1 0])) & ...
-        (CL_IMG ~= circshift(CL_IMG_R, [-1 0])) & ...
-        (CL_IMG ~= circshift(CL_IMG_R, [0 1])) & ...
-        (CL_IMG ~= circshift(CL_IMG_R, [0 -1]));
+            
+    mask = (CL_IMG ~= CL_IMG_R);
+%     mask = (CL_IMG ~= CL_IMG_R) & ...
+%         (CL_IMG ~= circshift(CL_IMG_R, [1 0])) & ...
+%         (CL_IMG ~= circshift(CL_IMG_R, [-1 0])) & ...
+%         (CL_IMG ~= circshift(CL_IMG_R, [0 1])) & ...
+%         (CL_IMG ~= circshift(CL_IMG_R, [0 -1]));
     
     subplot(1,4,4);
     %     imshow(CL_IMG ~= CL_IMG_R);
@@ -184,7 +184,7 @@ while true
     [REPRESENTATION_R, ~, ~, ~] = shearlet_combined_fast(COEFFS_R, c, [2 2], idxs, 0.05, false, true, SKIP_BORDER);
     CL_IND_R = shearlet_cluster_by_seeds(REPRESENTATION_R, COEFFS_R, SORT_CTRS);
     [CL_IMG_R, ~, ~] = shearlet_cluster_image(CL_IND_R, size(SORT_CTRS,1), false, false);
-    CL_IMG_R = imrotate(CL_IMG_R, 90);
+    CL_IMG_R = imrotate(CL_IMG_R, -AMOUNT);
     show_rgb_r = ind2rgb(CL_IMG_R, cluster_map);
     
     % -------------------

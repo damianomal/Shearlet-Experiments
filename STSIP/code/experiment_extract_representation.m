@@ -1,9 +1,9 @@
 
 % lista di video da caricare
-% video_filenames = {'person04_boxing_d1_uncomp.avi',1,100;
-%                    'Sample0001_color.mp4', 1239, 1350;
-%                    'mixing_cam2.avi', 1, 100};
-video_filenames = {'mixing_cam2.avi', 1, 100};
+video_filenames = {'person04_boxing_d1_uncomp.avi',1,100;
+                   'Sample0001_color.mp4', 1239, 1350;
+                   'mixing_cam2.avi', 1, 100};
+% video_filenames = {'mixing_cam2.avi', 1, 100};
 descriptors = [];
 
 %% video da caricare per selezionare punti
@@ -123,7 +123,7 @@ prefix = 'results/transformation_1/';
 for fname = video_filenames'
     
     % ...carica il video
-    VID = load_video_to_mat_rotated(fname{1}, 160, fname{2}, fname{3}, false);
+    VID = load_video_to_mat_rotated(fname{1}, 160, fname{2}, fname{3}, false, -90);
     
     % ...calcola la trasformata
     clear COEFFS idxs
@@ -381,7 +381,6 @@ for fname = video_filenames'
         imagesel = getfield(getframe(), 'cdata');
         imwrite(imagesel, outname, 'png');
 %         saveas(gcf, outname);
-        
 %         close(fH);
     end
     
