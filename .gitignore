@@ -20,6 +20,8 @@ results/
 shearlet_preloaded_sequences/
 *.asv
 *.png
+*.avi
+
 
 # External tool builders
 .externalToolBuilders/

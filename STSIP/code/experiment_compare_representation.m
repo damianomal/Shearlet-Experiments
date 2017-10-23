@@ -254,7 +254,7 @@ while true
     
     subplot(1,4,2);
     imshow(show_rgb);
-    
+        
     subplot(1,4,3);
     imshow(show_rgb_r, []);
     
