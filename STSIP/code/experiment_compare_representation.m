@@ -4,7 +4,7 @@ close all;
 % lista di video da caricare
 video_filenames = {'person04_boxing_d1_uncomp.avi',1,100;
     'Sample0001_color.mp4', 1239, 1350;
-    'mixing_cam2.avi', 1, 100; 
+    'mixing_cam2.avi', 1, 100;
     'trial_018.avi', 1, 100};
 
 % video_filenames = {'mixing_cam2.avi', 1, 100};
@@ -117,13 +117,13 @@ while true
     
     subplot(1,4,3);
     imshow(show_rgb_r, []);
-            
+    
     mask = (CL_IMG ~= CL_IMG_R);
-%     mask = (CL_IMG ~= CL_IMG_R) & ...
-%         (CL_IMG ~= circshift(CL_IMG_R, [1 0])) & ...
-%         (CL_IMG ~= circshift(CL_IMG_R, [-1 0])) & ...
-%         (CL_IMG ~= circshift(CL_IMG_R, [0 1])) & ...
-%         (CL_IMG ~= circshift(CL_IMG_R, [0 -1]));
+    %     mask = (CL_IMG ~= CL_IMG_R) & ...
+    %         (CL_IMG ~= circshift(CL_IMG_R, [1 0])) & ...
+    %         (CL_IMG ~= circshift(CL_IMG_R, [-1 0])) & ...
+    %         (CL_IMG ~= circshift(CL_IMG_R, [0 1])) & ...
+    %         (CL_IMG ~= circshift(CL_IMG_R, [0 -1]));
     
     subplot(1,4,4);
     %     imshow(CL_IMG ~= CL_IMG_R);
@@ -254,7 +254,7 @@ while true
     
     subplot(1,4,2);
     imshow(show_rgb);
-        
+    
     subplot(1,4,3);
     imshow(show_rgb_r, []);
     
@@ -329,5 +329,6 @@ end
 
 
 %%
+
 
 
