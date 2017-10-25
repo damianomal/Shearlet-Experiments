@@ -8,6 +8,8 @@ videos = dict_create_video_cell('E:\Datasets_31GB\KTH');
 
 addpath(genpath('E:\Datasets_31GB\KTH'));
 
+
+
 %%
 
 % --- DETECTION PARAMETERS
@@ -24,7 +26,7 @@ lines = [1 9 25 49 81 121];
 SKIP_BORDER = 5;
 new_ctr_index = 0;
 
-repr_type = '12dim';
+repr_type = 'original';
 
 INIT_DIM = 1000;
 
@@ -43,7 +45,7 @@ end
 
 DISTANCE_TH = 0.1;
 
-for id = 1:numel(videos)
+for id = 1:20:numel(videos)
        
     video_filename = videos{id}{1}; 
     video_start = videos{id}{2};
@@ -51,7 +53,7 @@ for id = 1:numel(videos)
     video_min_k =  videos{id}{4}(1);
     video_max_k = videos{id}{4}(2);
     
-    fprintf('---- Processing video: %s\n', video_filename);
+    fprintf('---- Processing video: %s (%d/%d)\n', video_filename, id, numel(videos));
 
     % --- VIDEO LOADING ---
     clear VID
@@ -96,7 +98,7 @@ for id = 1:numel(videos)
         %
         %         REPRESENTATION_CAT = [REPRESENTATION2_RED REPRESENTATION3_RED];
         
-        REPRESENTATION_USED = shearlet_descriptor_fast_by_type(COEFFS, frame, idxs, repr_type, true, true, SKIP_BORDER);
+        REPRESENTATION_USED = shearlet_descriptor_fast_by_type(COEFFS, frame, idxs, SCALES, repr_type, true, true, SKIP_BORDER);
         
         % --- CLUSTERING AND CENTROIDS ADDING ---
         for K = video_min_k:video_max_k
@@ -155,11 +157,11 @@ full_cluster_indexes = zeros(size(COEFFS,1), size(COEFFS,2), size(COEFFS,3));
 color_maps = zeros(size(COEFFS,1), size(COEFFS,2), size(COEFFS,3), 3);
 
 % dictionary
-CENTROIDS = ALL_CENTROIDS;
+CENTROIDS = ALL_CENTROIDS_121dim;
 
 for t=10:80
     
-    REPRESENTATION_USED = shearlet_descriptor_fast_by_type(COEFFS, t, idxs, repr_type, true, true, SKIP_BORDER);
+    REPRESENTATION_USED = shearlet_descriptor_fast_by_type(COEFFS, t, idxs, scales(1), repr_type, true, true, SKIP_BORDER);
     CL_IND = shearlet_cluster_by_seeds(REPRESENTATION_USED, COEFFS, CENTROIDS);
     full_cluster_indexes(:,:,t) = shearlet_cluster_image(CL_IND, size(CENTROIDS,1), false, false);
 %     full_motion(:,:,t) = angle_map(:,:,3);
@@ -173,14 +175,29 @@ fprintf('-- Time for Full Video Repr./Motion Extraction: %.4f seconds\n', toc(st
 
 close all;
 
-SELECTED_PROFILES = 2:9;
+SELECTED_PROFILES = 3:16;
 INTERVAL = 10:80;
 
 PROF = shearlet_profiles_over_time(full_cluster_indexes, 1, 90, SELECTED_PROFILES);
 clusters_ot_image =  shearlet_plot_profiles_over_time(PROF(:,INTERVAL), SELECTED_PROFILES, 1, false);
 
-%%
+%% PROFILES EXTRACTION
 
+close all;
+
+SELECTED_PROFILES = 3:16;
+INTERVAL = 10:80;
+
+PROF = shearlet_profiles_over_time(full_cluster_indexes, 1, 90, SELECTED_PROFILES);
+
+mxs = max(PROF, [], 2);
+
+LIM = 300;
+mask = mxs < LIM & mxs > 100;
+
+clusters_ot_image =  shearlet_plot_profiles_over_time(PROF(mask,INTERVAL), 1:nnz(mask), 1, false);
+
+% clusters_ot_image =  shearlet_plot_profiles_over_time(PROF(:,INTERVAL), SELECTED_PROFILES, 1, false);
 
 %% VISUALIZATION OVER TIME
 

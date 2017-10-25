@@ -1,4 +1,4 @@
-function [ REPRESENTATION_USED ] = shearlet_descriptor_fast_by_type( coeffs_mat, frame, idxs, repr_type, print_debug, profiling, skip_border)
+function [ REPRESENTATION_USED ] = shearlet_descriptor_fast_by_type( coeffs_mat, frame, idxs, SCALE_USED, repr_type, print_debug, profiling, skip_border)
 %SHEARLET_DESCRIPTOR Calculates the shearlet descriptor for the selected
 %time instant and scale on the passed coefficients matrix
 %
